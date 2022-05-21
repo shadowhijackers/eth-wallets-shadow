@@ -4,10 +4,11 @@ import Web3 from "web3/dist/web3.min.js";
 
 import { storeToRefs } from "pinia";
 import { useWalletStore } from "@/stores/wallet";
-import { onMounted, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
+import type { TabsPaneContext } from "element-plus";
+import { PROVIDER_API } from "@/config";
+import { TransactionChecker } from "../common/TransactionChecker";
 
-const PROVIDER_API =
-  "https://ropsten.infura.io/v3/2f4364c096cd446c8d015eccadc0e0ce";
 
 const web3 = new Web3(PROVIDER_API);
 
@@ -16,8 +17,21 @@ const entropy = "WaLleTApPxxOFxxShAdOWxxHiJAcKeRS";
 const { address, shortAddress, encPrivateKey } = storeToRefs(useWalletStore());
 const { addOrUpdate } = useWalletStore();
 
-let showFullAddress = ref(false);
-let balance = ref(0);
+const showFullAddress = ref(false);
+const balance = ref(0);
+let activeTab = ref("txHistory");
+ let tableData = reactive([
+  {
+    mode: "sent",
+    peerAddress: "0x992jkjdf9983493dd",
+    value: "100",
+  },
+  {
+    mode: "recived",
+    peerAddress: "0x992jkjdf9983493dd",
+    value: "40",
+  },
+]);
 
 onMounted(async () => {
   addOrUpdate({
@@ -27,6 +41,7 @@ onMounted(async () => {
   });
 
   await setBalance();
+  await loadTransactionHistory();
 });
 
 function toggleFullAddress() {
@@ -34,31 +49,81 @@ function toggleFullAddress() {
 }
 
 async function setBalance() {
-  const wei =  await web3.eth.getBalance(address.value);
-  balance.value = web3.utils.fromWei(wei,"ether");
+  const wei = await web3.eth.getBalance(address.value);
+  balance.value = web3.utils.fromWei(wei, "ether");
 }
+
+async function loadTransactionHistory() {
+  const txChecker = new TransactionChecker(address.value);
+  tableData = await txChecker.getTransactions() as any[];
+}
+
+const handleClick = (tab: TabsPaneContext, event: Event) => {
+  console.log(tab, event);
+};
 </script>
 
 <template>
-  <h1 class="heading">Welcome to SHADOW HIJACKERS'S ETH WALLET</h1>
-  <h2>
-    Account
-    <span
-      @mouseover="toggleFullAddress()"
-      @mouseleave="toggleFullAddress()"
-      :title="showFullAddress ? address : ''"
-    >
-      {{ shortAddress }}</span
-    >
-  </h2>
-  <div>
-    <h1>Balance</h1>
-    <h3>{{balance}} ETH</h3>
+  <div class="accounts">
+    <h2>Account Details</h2>
+    <section class="accounts__info">
+      <article>
+        <p>Address</p>
+        <p
+          @mouseover="toggleFullAddress()"
+          @mouseleave="toggleFullAddress()"
+          :title="showFullAddress ? address : ''"
+        >
+          {{ shortAddress }}
+        </p>
+      </article>
+      <article>
+        <p>Balance</p>
+        <p>{{ balance }} ETH</p>
+      </article>
+    </section>
+
+    <section class="accounts__tabs">
+      <el-tabs v-model="activeTab" class="demo-tabs" @tab-click="handleClick">
+        <el-tab-pane label="Transaction History" name="txHistory">
+          <div>
+            <el-table :data="tableData" style="width: 100%">
+              <el-table-column prop="mode" label="Transaction Mode" width="180" />
+              <el-table-column prop="peerAddress" label="Peer Address" width="180" />
+              <el-table-column prop="value" label="Value" />
+            </el-table>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="Buy" name="txBuy">Config</el-tab-pane>
+        <el-tab-pane label="Sell" name="TxSell">Role</el-tab-pane>
+      </el-tabs>
+    </section>
   </div>
 </template>
 
 <style scoped>
-.heading {
-  color: rgba(51, 175, 16, 0.8);
+.accounts > h2 {
+  font-size: 2.5rem;
+  color: rgba(0, 0, 0, 0.7);
+  padding: 0.5rem 0;
+}
+.accounts__info {
+  display: flex;
+  flex-direction: column;
+}
+
+.accounts__info article {
+  display: flex;
+}
+
+.accounts__info article p {
+  margin-right: 1rem;
+  font-size: 1.2rem;
+  margin: 0.25rem;
+}
+
+.accounts__tabs {
+  width: 50%;
+  margin-top: 1rem;
 }
 </style>
