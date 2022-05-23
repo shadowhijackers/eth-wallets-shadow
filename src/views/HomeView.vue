@@ -33,9 +33,8 @@ import { Menu as IconMenu, Message, Setting } from "@element-plus/icons-vue";
                 <template #title>
                   <el-icon><icon-menu /></el-icon>Accounts
                 </template>
-                <el-menu-item index="1-1">Account 1</el-menu-item>
-                <el-menu-item index="1-2">Account 2</el-menu-item>
-                <el-menu-item index="1-3">Create Account</el-menu-item>
+                <el-menu-item index="1-1"><router-link :to="{name: 'Account Details', params: {id: 'test'}}">Account 1</router-link></el-menu-item>
+                <el-menu-item index="1-2"> <router-link :to="{name: 'CreateAccount'}"> Create Account</router-link></el-menu-item>
               </el-sub-menu>
               <el-sub-menu index="2">
                 <template #title>
@@ -50,7 +49,7 @@ import { Menu as IconMenu, Message, Setting } from "@element-plus/icons-vue";
 
         <el-main>
           <el-scrollbar>
-            <Wallet />
+            <RouterView />
           </el-scrollbar>
         </el-main>
       </el-container>

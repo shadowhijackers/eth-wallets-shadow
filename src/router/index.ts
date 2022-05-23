@@ -8,6 +8,22 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomeView,
+      children: [
+        {
+          path: "",
+          redirect: to=>{ return { path: "/accounts/create"}}
+        },
+        {
+          path: "/accounts/:id",
+          name: "Account Details",
+          component: ()=>import("../components/Wallet.vue"),
+        },
+        {
+          path: "/accounts/create",
+          name: "CreateAccount",
+          component: ()=>import("../components/NewAccount.vue"),
+        }
+      ]
     },
     {
       path: "/about",

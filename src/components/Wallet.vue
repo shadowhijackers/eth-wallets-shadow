@@ -41,7 +41,7 @@ onMounted(async () => {
   });
 
   await setBalance();
-  await loadTransactionHistory();
+  // await loadTransactionHistory();
 });
 
 function toggleFullAddress() {
