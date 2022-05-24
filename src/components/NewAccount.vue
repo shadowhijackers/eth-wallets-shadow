@@ -15,7 +15,7 @@ const form = reactive({
 });
 
 const onSubmit = async () => {
-  if (form.password != form.confirmPassword){
+  if (form.password && form.password != form.confirmPassword){
     alert("Passwords not matched");
     return;
   }
