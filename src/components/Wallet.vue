@@ -91,10 +91,10 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
 
         <el-tab-pane label="Buy" name="txBuy">
           <template v-if="networkType == 'ropsten'">
-            <a href="https://faucet.dimensions.network/"> Buy from Faucet</a>
+            <a href="https://faucet.dimensions.network/" target="_blank"> Buy from Faucet</a>
           </template>
           <template v-else-if="networkType == 'mainnet'">
-            <a href="https://www.moonpay.com/buy/eth"> Buy from MoonPay</a>
+            <a href="https://www.moonpay.com/buy/eth" target="_blank"> Buy from MoonPay</a>
           </template>
         </el-tab-pane>
 
