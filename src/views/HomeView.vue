@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import Wallet from "../components/Wallet.vue";
 import { Menu as IconMenu, Message, Setting } from "@element-plus/icons-vue";
+import { storeToRefs } from "pinia";
+import { useWalletStore } from "@/stores/wallet";
+import { useNetworkStore } from "@/stores/network";
 
+const { accounts } = storeToRefs(useWalletStore());
+const { networks } = storeToRefs(useNetworkStore());
 </script>
 
 <template>
@@ -16,8 +21,11 @@ import { Menu as IconMenu, Message, Setting } from "@element-plus/icons-vue";
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item disabled>Choose Network</el-dropdown-item>
-                <el-dropdown-item>Main Network</el-dropdown-item>
-                <el-dropdown-item>Ropstan Test Network</el-dropdown-item>
+                <el-dropdown-item
+                  v-for="network of networks"
+                  :key="network.type"
+                  >{{ network.type }}</el-dropdown-item
+                >
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -33,8 +41,21 @@ import { Menu as IconMenu, Message, Setting } from "@element-plus/icons-vue";
                 <template #title>
                   <el-icon><icon-menu /></el-icon>Accounts
                 </template>
-                <el-menu-item index="1-1"><router-link :to="{name: 'Account Details', params: {id: 'test'}}">Account 1</router-link></el-menu-item>
-                <el-menu-item index="1-2"> <router-link :to="{name: 'CreateAccount'}"> Create Account</router-link></el-menu-item>
+                <el-menu-item
+                  :index="'1' + '-' + index.toString()"
+                  v-for="(account, index) of accounts"
+                  :key="account.address"
+                >
+                  <router-link
+                    :to="{ name: 'Account Details', params: { id: account.address } }"
+                    >Account {{ index +1}}</router-link
+                  >
+                </el-menu-item>
+                <el-menu-item :index="'1' + '-' + accounts.length.toString()">
+                  <router-link :to="{ name: 'CreateAccount' }">
+                    Create Account</router-link
+                  ></el-menu-item
+                >
               </el-sub-menu>
               <el-sub-menu index="2">
                 <template #title>

@@ -6,13 +6,14 @@ import { storeToRefs } from "pinia";
 import { useWalletStore } from "@/stores/wallet";
 import { onMounted, reactive, ref } from "vue";
 import type { TabsPaneContext } from "element-plus";
-import { PROVIDER_API } from "@/config";
+import { ROPSTEN_PROVIDER_API } from "@/config";
 import { TransactionChecker } from "../common/TransactionChecker";
 import { useNetwork } from "@vueuse/core";
 import { useNetworkStore } from "@/stores/network";
+import { Web3Service } from "@/services/web3.service";
 
 
-const web3 = new Web3(PROVIDER_API);
+const web3 = Web3Service.getInstance();
 
 const entropy = "WaLleTApPxxOFxxShAdOWxxHiJAcKeRS";
 
@@ -105,6 +106,10 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
             </el-form-item>
             <el-form-item>
               <el-input placeholder="Enter the ether value"></el-input>
+            </el-form-item>
+
+            <el-form-item>
+              <el-input placeholder="Enter the password"></el-input>
             </el-form-item>
 
             <el-form-item>

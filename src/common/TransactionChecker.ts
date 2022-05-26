@@ -1,6 +1,8 @@
-import { ETHERSCAN_API, PROVIDER_API } from "@/config";
+import { ROPSTEN_PROVIDER_API } from './../config';
+import { ETHERSCAN_API } from "@/config";
 // @ts-ignore
 import Web3 from "web3/dist/web3.min.js";
+import { Web3Service } from '@/services/web3.service';
 
 export class TransactionChecker {
   address: string;
@@ -9,7 +11,7 @@ export class TransactionChecker {
   network: string = "ropsten";
   constructor(address: string) {
     this.address = address.toLowerCase();
-    this.web3 = new Web3(PROVIDER_API);
+    this.web3 = Web3Service.getInstance();;
   }
 
   async getTransactions() {
