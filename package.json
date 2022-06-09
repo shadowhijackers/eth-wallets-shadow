@@ -9,8 +9,10 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@types/bcryptjs": "^2.4.2",
     "@types/ethereumjs-tx": "^2.0.0",
     "@types/web3": "^1.2.2",
+    "bcryptjs": "^2.4.3",
     "element-plus": "^2.2.1",
     "ethereumjs-tx": "^2.1.2",
     "pinia": "^2.0.13",

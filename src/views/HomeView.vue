@@ -7,6 +7,8 @@ import { useNetworkStore } from "@/stores/network";
 
 const { accounts } = storeToRefs(useWalletStore());
 const { networks } = storeToRefs(useNetworkStore());
+
+
 </script>
 
 <template>

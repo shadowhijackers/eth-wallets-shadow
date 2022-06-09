@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 
 export interface Account {
   address: string;
-  encPrivateKey: string;
+  encPrivateKey?: string;
 }
 
 const initialState = {
@@ -28,10 +28,10 @@ export const useWalletStore = defineStore({
       return "" + state.selected.address.slice(0, 15) + "...";
     },
     address(state) {
-      return state.selected.address;
+      return state.selected?.address;
     },
     encPrivateKey(state) {
-      return state.selected.encPrivateKey;
+      return state.selected?.encPrivateKey;
     },
   },
   actions: {
@@ -40,7 +40,7 @@ export const useWalletStore = defineStore({
         (_ac: any) => _ac.address == account.address
       );
       if (!isAccountExists) {
-        this.accounts.push(account);
+        this.accounts.push({address: account.address});
       }
     },
   },

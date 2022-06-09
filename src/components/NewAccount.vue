@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ROPSTEN_PROVIDER_API } from "@/config";
+import { BcryptService } from "@/services/bcrypt.service";
 import { Web3Service } from "@/services/web3.service";
 import { useWalletStore } from "@/stores/wallet";
 import { storeToRefs } from "pinia";
-import { reactive } from "vue-demi";
+import { onMounted, reactive } from "vue-demi";
 
 // @ts-ignore
 import Web3 from "web3/dist/web3.min.js";
@@ -11,7 +12,8 @@ import Web3 from "web3/dist/web3.min.js";
 const web3 = Web3Service.getInstance();
 const entropy = "W@LleTDApP##OF-ShAd0WxxHiJAcKeRS";
 const key = "@WallEtSxxShAd0W";
-const { address } = storeToRefs(useWalletStore());
+const hasPassword = BcryptService.hasPassword();
+const {addOrUpdate} = useWalletStore();
 
 const form = reactive({
   password: "",
@@ -19,15 +21,23 @@ const form = reactive({
 });
 
 const onSubmit = async () => {
-  if (form.password && form.password != form.confirmPassword) {
-    alert("Passwords not matched");
-    return;
+  if (hasPassword){
+    if (!(await BcryptService.verifyPassword(form.password))){
+      alert("Enter the correct password!");
+      return
+    }
+  }else {
+    if (form.password && form.password != form.confirmPassword) {
+      alert("Passwords not matched");
+      return;
+    }
+    BcryptService.hashThePassword(form.password);
   }
   const accountInfo = await web3.eth.accounts.create(entropy);
   if (accountInfo) {
-    await web3.eth.accounts.wallet.add(accountInfo.privateKey);
-    const isSaved = await web3.eth.accounts.save(form.password, key);
-
+    const account = await web3.eth.accounts.wallet.add(accountInfo);
+    const isSaved = await web3.eth.accounts.wallet.save(form.password, key);
+    addOrUpdate({address: accountInfo.address, encPrivateKey: ''});
     if (isSaved) {
       alert("Account created successfully");
     }
@@ -42,7 +52,7 @@ const onSubmit = async () => {
         <el-input v-model="form.password"></el-input>
       </el-form-item>
 
-      <div v-if="!address">
+      <div v-if="!hasPassword">
         <el-form-item label="Confirm Password">
           <el-input v-model="form.confirmPassword"></el-input>
         </el-form-item>

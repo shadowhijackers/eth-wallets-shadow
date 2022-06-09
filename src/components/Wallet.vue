@@ -7,7 +7,7 @@ import { useWalletStore } from "@/stores/wallet";
 import { onMounted, reactive, ref } from "vue";
 import type { TabsPaneContext } from "element-plus";
 import { ROPSTEN_PROVIDER_API } from "@/config";
-import { TransactionChecker } from "../common/TransactionChecker";
+import { TransactionChecker } from "../services/TransactionChecker";
 import { useNetwork } from "@vueuse/core";
 import { useNetworkStore } from "@/stores/network";
 import { Web3Service } from "@/services/web3.service";
@@ -28,12 +28,6 @@ let activeTab = ref("txHistory");
 let tableData = ref([] as any);
 
 onMounted(async () => {
-  addOrUpdate({
-    address: "0x93D5e142B24278A3C1eDc3C04e54Ed7d1A0485ec",
-    encPrivateKey:
-      "a5cca0b3c964445b736b8c617c9f8db3fd082c63d1a62bbf5b2eeda4cdf34925",
-  });
-
   await setBalance();
   await loadTransactionHistory();
 });
