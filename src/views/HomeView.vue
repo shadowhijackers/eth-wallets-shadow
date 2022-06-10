@@ -4,11 +4,17 @@ import { Menu as IconMenu, Message, Setting } from "@element-plus/icons-vue";
 import { storeToRefs } from "pinia";
 import { useWalletStore } from "@/stores/wallet";
 import { useNetworkStore } from "@/stores/network";
+import router from "@/router";
 
 const { accounts } = storeToRefs(useWalletStore());
+const { updateSelected } = useWalletStore();
+
 const { networks } = storeToRefs(useNetworkStore());
 
-
+const selectAccount = (account: any)=>{
+  updateSelected(account);
+  router.push("/accounts/" + account.address);
+};
 </script>
 
 <template>
@@ -47,11 +53,16 @@ const { networks } = storeToRefs(useNetworkStore());
                   :index="'1' + '-' + index.toString()"
                   v-for="(account, index) of accounts"
                   :key="account.address"
-                >
-                  <router-link
-                    :to="{ name: 'Account Details', params: { id: account.address } }"
+                   @click="() => selectAccount(account)"
+                >Account {{ index +1}}
+                  <!-- <router-link
+                    @click="() => selectAccount(account)"
+                    :to="{
+                      name: 'Account Details',
+                      params: { id: account.address },
+                    }"
                     >Account {{ index +1}}</router-link
-                  >
+                  > -->
                 </el-menu-item>
                 <el-menu-item :index="'1' + '-' + accounts.length.toString()">
                   <router-link :to="{ name: 'CreateAccount' }">

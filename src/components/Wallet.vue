@@ -11,6 +11,7 @@ import { TransactionChecker } from "../services/TransactionChecker";
 import { useNetwork } from "@vueuse/core";
 import { useNetworkStore } from "@/stores/network";
 import { Web3Service } from "@/services/web3.service";
+import { add } from "lodash";
 
 
 const web3 = Web3Service.getInstance();
@@ -19,6 +20,8 @@ const entropy = "WaLleTApPxxOFxxShAdOWxxHiJAcKeRS";
 
 const { address, shortAddress, encPrivateKey } = storeToRefs(useWalletStore());
 const { addOrUpdate } = useWalletStore();
+
+const walletStore = useWalletStore();
 
 const {networkType} = storeToRefs(useNetworkStore())
 
@@ -31,6 +34,14 @@ onMounted(async () => {
   await setBalance();
   await loadTransactionHistory();
 });
+
+walletStore.$onAction(async (state)=>{
+  console.log(state);
+  console.log(address);
+  debugger
+  await setBalance();
+  await loadTransactionHistory();
+}, true);
 
 function toggleFullAddress() {
   showFullAddress.value = !showFullAddress.value;

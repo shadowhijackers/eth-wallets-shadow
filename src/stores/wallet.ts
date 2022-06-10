@@ -43,5 +43,8 @@ export const useWalletStore = defineStore({
         this.accounts.push({address: account.address});
       }
     },
+    updateSelected(account: Account){
+       this.selected = account;
+    }
   },
 });
